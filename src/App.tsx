@@ -1,11 +1,6 @@
-import React, { SFC } from 'react';
-import './App.css';
-import { TodoList } from './components/TodoList/List';
+import React, { SFC, useState } from "react";
 
-const App: SFC = () => {
-  return (
-    <TodoList />
-  );
+export const App: SFC = function App() {
+  const [count, setCount] = useState(0);
+  return <h1>Hello React {count}</h1>;
 }
-
-export default App;
