@@ -1,0 +1,6 @@
+{
+  "watch": ["server"],
+  "ext": "tsx",
+  "ignore": ["**/*.spec.ts"],
+  "exec": "webpack-dev-server"
+}
