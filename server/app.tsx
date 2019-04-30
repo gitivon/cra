@@ -2,7 +2,7 @@ import React from 'react';
 import express from 'express';
 import ReactDOMServer from 'react-dom/server';
 import { render } from 'nunjucks';
-import path from 'path'
+import path from 'path';
 import { ServerLocation } from '@reach/router';
 import { App } from '../src/App';
 import webpack = require('webpack');
@@ -23,14 +23,14 @@ export const app = (app: express.Application, server: any) => {
     const assetsByChunkName = server._stats.toJson().assetsByChunkName;
     const fs = res.locals.fs;
     const outputPath = server._stats.toJson().outputPath;
-    const title = 'react-ssr-cli-2'
+    const title = 'react-ssr-cli-2';
     const js = normalizeAssets(assetsByChunkName.main)
-      .filter((path) => path.endsWith('.js'))
-      .map((path) => `<script src="/assets/${path}"></script>`)
+      .filter(path => path.endsWith('.js'))
+      .map(path => `<script src="/assets/${path}"></script>`)
       .join('\n');
     const styles = normalizeAssets(assetsByChunkName.main)
-      .filter((path) => path.endsWith('.css'))
-      .map((path) => fs.readFileSync(outputPath + '/' + path))
+      .filter(path => path.endsWith('.css'))
+      .map(path => fs.readFileSync(outputPath + '/' + path))
       .join('\n');
     const content = ReactDOMServer.renderToString(
       <ServerLocation url={req.url}>
@@ -44,9 +44,9 @@ export const app = (app: express.Application, server: any) => {
       styles,
     });
     res.end(output);
-  })
+  });
 
   app.get('/api', (req, res) => {
-    res.end('haha api')
-  })
-}
+    res.end('haha api');
+  });
+};
