@@ -1,46 +1,54 @@
 import webpack from 'webpack';
 import webpackBar from 'webpackbar';
-import HtmlWebpackPlugin from 'html-webpack-plugin'
+import HtmlWebpackPlugin from 'html-webpack-plugin';
 import path from 'path';
 import { app } from '../server/app';
 
+const mode: webpack.Configuration['mode'] = process.env.NODE_ENV as any;
 const config: webpack.Configuration = {
-  mode: 'development',
-  entry: [
-    // 'webpack-hot-middleware/client?noInfo=true&reload=true&dynamicPublicPath=true',
-    './src/index.tsx',
-  ],
+  mode,
+  entry: ['./src/index.tsx'],
   output: {
-    path: path.resolve(__dirname, '../assets/'),
-    publicPath: '/assets/'
+    publicPath: '/assets/',
   },
   resolve: {
-    extensions: [
-      '.tsx', '.ts', '.jsx', '.js'
-    ]
+    extensions: ['.tsx', '.ts', '.jsx', '.js'],
   },
   module: {
     rules: [
       {
         test: /\.tsx?$/,
-        loader: 'ts-loader'
-      }
-    ]
+        loader: 'ts-loader',
+      },
+      {
+        test: /\.(png|jpg|jpeg|webp|svg)$/,
+        loader: 'url-loader',
+      },
+    ],
   },
-  devServer: {
+  plugins: [
+    new webpackBar(),
+    new HtmlWebpackPlugin({
+      template: path.resolve(__dirname, '../src/index.njk'),
+    }),
+  ],
+};
+
+if (mode === 'development') {
+  config.devServer = {
     contentBase: path.resolve(__dirname, 'public'),
     hot: true,
     before: app,
     compress: true,
     stats: 'errors-only',
-  },
-  plugins: [
-    new webpack.HotModuleReplacementPlugin(),
-    new webpackBar(),
-    new HtmlWebpackPlugin({
-      template: path.resolve(__dirname, '../src/index.njk')
-    }),
-  ]
-};
+  };
+  config.plugins!.push(new webpack.HotModuleReplacementPlugin());
+} else {
+  config.optimization = {
+    splitChunks: {
+      chunks: 'all',
+    },
+  };
+}
 
 export default config;
