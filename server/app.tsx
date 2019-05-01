@@ -1,5 +1,5 @@
 import React from 'react';
-import express from 'express';
+import express, { RequestHandler } from 'express';
 import ReactDOMServer from 'react-dom/server';
 import { render } from 'nunjucks';
 import path from 'path';
@@ -7,7 +7,7 @@ import { ServerLocation } from '@reach/router';
 import { App } from '../src/App';
 import isObject from 'is-object';
 import { ServerStyleSheet, StyleSheetManager } from 'styled-components';
-
+import chalk from 'chalk';
 function normalizeAssets(assets: any) {
   if (isObject(assets)) {
     return Object.values(assets);
@@ -17,13 +17,18 @@ function normalizeAssets(assets: any) {
 
 const sheet = new ServerStyleSheet();
 export const app = (app: express.Application, server: any) => {
-  app.get('/', (req, res) => {
+  const ssr: RequestHandler = (req, res) => {
     const assetsByChunkName = server._stats.toJson().assetsByChunkName;
     const title = 'react-ssr-cli-2';
     const js = normalizeAssets(assetsByChunkName.main)
       .filter(path => path.endsWith('.js'))
       .map(path => `<script src="/assets/${path}"></script>`)
       .join('\n');
+    console.log(
+      chalk.greenBright(new Date().toLocaleString()),
+      chalk.blueBright(req.method),
+      chalk.yellow(req.url)
+    );
     const content = ReactDOMServer.renderToString(
       <StyleSheetManager sheet={sheet.instance}>
         <ServerLocation url={req.url}>
@@ -39,7 +44,9 @@ export const app = (app: express.Application, server: any) => {
       styleTags,
     });
     res.end(output);
-  });
+  };
+  app.get('/', ssr);
+  app.get('/hello', ssr);
 
   app.get('/api', (req, res) => {
     res.end('haha api');

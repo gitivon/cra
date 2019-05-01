@@ -2,8 +2,12 @@ import React, { SFC, useState } from 'react';
 import { createGlobalStyle, ServerStyleSheet } from 'styled-components';
 import { HelloWorld } from './components/HelloWorld';
 import { Router } from '@reach/router';
+import { Home } from './views/Home';
 
 const GlobalStyled = createGlobalStyle`
+  * {
+    outline: none;
+  }
   body {
     margin: 0;
     padding: 0;
@@ -14,14 +18,13 @@ const GlobalStyled = createGlobalStyle`
 `;
 
 export const App: SFC = function App() {
-  const [count, setCount] = useState(0);
   return (
     <>
       <GlobalStyled />
       <Router>
-        <HelloWorld path="/" />
+        <Home path="/" />
+        <HelloWorld path="/hello" />
       </Router>
-      <h1 onClick={() => setCount(count + 1)}>Hello React {count}</h1>
     </>
   );
 };
