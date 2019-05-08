@@ -3,13 +3,16 @@ import webpackBar from 'webpackbar';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import path from 'path';
 import { app } from '../server/app';
+import dotenv from 'dotenv';
 
+const { parsed } = dotenv.config();
+const isDev = process.env.NODE_ENV === 'development';
 const mode: webpack.Configuration['mode'] = process.env.NODE_ENV as any;
 const config: webpack.Configuration = {
   mode,
   entry: ['./src/index.tsx'],
   output: {
-    publicPath: '/assets/',
+    // publicPath: '/assets/',
   },
   resolve: {
     extensions: ['.tsx', '.ts', '.jsx', '.js'],
@@ -28,8 +31,15 @@ const config: webpack.Configuration = {
   },
   plugins: [
     new webpackBar(),
+    new webpack.DefinePlugin({
+      'process.env': JSON.stringify(parsed),
+    }),
     new HtmlWebpackPlugin({
-      template: path.resolve(__dirname, '../src/index.njk'),
+      title: 'ReactSsrDemo',
+      template: path.resolve(
+        __dirname,
+        isDev ? '../src/index.njk' : '../build/index.html'
+      ),
     }),
   ],
 };

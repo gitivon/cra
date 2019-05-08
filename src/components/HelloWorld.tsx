@@ -1,7 +1,12 @@
 import React, { SFC } from 'react';
 import { RouteComponentProps } from '@reach/router';
-// import Logo from '../assets/logo.png';
+import Logo from '../assets/logo.png';
 
 export const HelloWorld: SFC<RouteComponentProps> = () => {
-  return <div>Hello World</div>;
+  return (
+    <div>
+      <img src={Logo} />
+      Hello World
+    </div>
+  );
 };

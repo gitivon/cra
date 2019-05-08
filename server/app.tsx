@@ -22,7 +22,7 @@ export const app = (app: express.Application, server: any) => {
     const title = 'react-ssr-cli-2';
     const js = normalizeAssets(assetsByChunkName.main)
       .filter(path => path.endsWith('.js'))
-      .map(path => `<script src="/assets/${path}"></script>`)
+      .map(path => `<script src="/${path}"></script>`)
       .join('\n');
     console.log(
       chalk.greenBright(new Date().toLocaleString()),
